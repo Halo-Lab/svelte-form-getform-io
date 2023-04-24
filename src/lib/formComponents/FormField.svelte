@@ -14,8 +14,8 @@ let errorVisible: boolean = false;
 
 <style lang="scss">
 
-@import '../styles/variables.scss';
-@import '../styles/mixins.scss';
+@import '../../styles/variables.scss';
+@import '../../styles/mixins.scss';
 
 .formField {
 
@@ -48,7 +48,7 @@ let errorVisible: boolean = false;
         height: 24px;
         top: 40px;
         right: 16px;
-        background: url('../assets/icons/iconError.svg') no-repeat center;
+        background: url('../../assets/icons/iconError.svg') no-repeat center;
     }
 
     input, textarea {
@@ -106,7 +106,7 @@ let errorVisible: boolean = false;
             height: 11px;
             top: -9px;
             right: 20px;
-            background: url('../assets/icons/iconErrorTooltip.svg') no-repeat center;
+            background: url('../../assets/icons/iconErrorTooltip.svg') no-repeat center;
             pointer-events: none;
         }
 

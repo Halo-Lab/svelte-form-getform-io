@@ -2,6 +2,7 @@
 	"name": "@halo-lab/svelte-form-getform-io",
 	"description": "A simple form library for Svelte that uses Getform",
 	"version": "1.0.0",
+	"private": false,
 	"keywords": [
 		"svelte", "form", "getform",
 		"form library", "library", "component",
