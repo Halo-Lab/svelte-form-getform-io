@@ -1,20 +1,21 @@
 <script lang="ts">
-import { Form, FormField, FormCheckbox, FormRadioGroup, FormSelect, FormFile, unchecked } from '$lib';
+import { Form, FormField, FormCheckbox, FormRadioGroup, FormSelect, FormFile, checked, MultiFileArray, filesRequired } from '$lib';
 import { form, field } from 'svelte-forms';
 import { required, email, max } from 'svelte-forms/validators';
 
 const fieldName = field('name', '', [required(), max(32)]);
 const fieldEmail = field('email', '', [required(), email()]);
 const fieldMessage = field('message', '', [required(), max(512)]);
-const fieldTerms = field('terms', false, [unchecked()]);
+const fieldTerms = field('terms', false, [checked()]);
 const fieldThe = field('the', '', [required()]);
 const fieldCategory = field('category', '', [required()]);
-const fieldImage = field('image', [], [required()]);
+const fieldImages = field('images', new MultiFileArray());
+const fieldOneImage = field('oneImage', new MultiFileArray(), [filesRequired()]);
 
 const formContact = form(
     fieldName, fieldEmail, fieldMessage, 
     fieldTerms, fieldThe, fieldCategory, 
-    fieldImage
+    fieldOneImage, fieldImages
 );
 </script>
 
@@ -68,7 +69,7 @@ const formContact = form(
         bind:value={$fieldTerms.value}
         errors={$fieldTerms.errors}
         errorText={{
-            unchecked: "Please agree to the Terms of Service"
+            checked: "Please agree to the Terms of Service"
         }}
     />
     <FormRadioGroup
@@ -105,8 +106,23 @@ const formContact = form(
         }}
     />
     <FormFile
-        title="Image"
+        title="Images"
         accept="image/*"
-        bind:value={$fieldImage.value}
+        description="Supported formates: JPEG, PNG, GIF, PDF, Word"
+        bind:value={$fieldImages.value}
+        errors={$fieldImages.errors}
+        errorText={{
+            filesRequired: "Please upload at least one image"
+        }}
+    />
+    <FormFile
+        title="Audio File"
+        accept="audio/*"
+        multiple={false}
+        bind:value={$fieldOneImage.value}
+        errors={$fieldOneImage.errors}
+        errorText={{
+            filesRequired: "Please upload an audio"
+        }}
     />
 </Form>

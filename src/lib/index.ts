@@ -7,11 +7,12 @@ import FormSelect from './formComponents/FormSelect.svelte';
 import FormFile from './formComponents/FormFile.svelte';
 
 import { FormSubmitData, RadioGroupOption, SelectOption } from '../util/types';
-import { unchecked } from '../util/validators';
+import { MultiFileArray } from '../util/classes';
+import { checked, filesRequired } from '../util/validators';
 
 export { 
     Form, FormField, FormCheckbox, 
     FormRadioGroup, FormSelect, FormFile,
-    unchecked,
+    checked, filesRequired, MultiFileArray,
 };
 export type { FormSubmitData, RadioGroupOption, SelectOption };

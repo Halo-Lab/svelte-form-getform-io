@@ -1,19 +1,20 @@
 <script lang="ts">
 
+import mimeMatch from "mime-match";
+
+import Error from "$lib/components/Error.svelte";
+import { MultiFileArray } from "../../util/classes";
 import uploadIcon from "$lib/../assets/icons/upload.svg";
 
 export let title: string;
+export let description: string = "";
 export let multiple: boolean = true;
 export let accept: string = "*";
+export let errors: string[] = [];
+export let errorText: Record<string, string> = {};
 
-export let value: File[] = [];
+export let value: MultiFileArray = new MultiFileArray();
 
-type FileProgress = {
-    file: File;
-    progress: number;
-}
-
-let files: FileProgress[] = [];
 let elemFileInput: HTMLInputElement;
 let isDragging = false;
 
@@ -49,23 +50,21 @@ function handleFiles (newFiles: FileList) {
     const fileArray = Array.from(newFiles);
 
     fileArray.forEach(file => {
+        if (!mimeMatch(file.type, accept)) return;
         const formData = new FormData();
         formData.append('file', file);
-
-        // create a progress obj
-        const progress = {
-            file,
-            progress: 0
-        };
-
-        // add progress obj to array
-        files = [...files, progress];
+        if (multiple)
+            value.files = [...value.files, file];
+        else
+            value.files = [file];
     });
+
+    elemFileInput.value = "";
 }
 
 </script>
 
-<div class="component">
+<div class="component" class:error={errors.length}>
     <h4>{title}</h4>
 
     <div class="filePanel">
@@ -80,38 +79,41 @@ function handleFiles (newFiles: FileList) {
             <img src={uploadIcon} alt="Upload icon" draggable="false" />
             <center>
                 <h4>Drop Files here</h4>
-                <p>Supported formates: JPEG, PNG, GIF, PDF, Word</p>
+                {#if description}
+                    <p>{description}</p>
+                {/if}
             </center>
             <input 
                 type="file" 
                 multiple={multiple}
                 accept={accept}
                 on:change={handleInputChange}
-                bind:value={value}
                 bind:this={elemFileInput}
             />
             <button
                 class="buttonPrimary"
-                on:click={() => {
-                    elemFileInput.click();
-                }}
-            >Choose Files</button>
+                on:click={() => elemFileInput.click()}
+            >
+                Choose Files
+            </button>
         </div>
-        {#if files.length}
-            <div class="fileStatus">
-                {#each files as { file, progress }, i}
-                    <div class="fileStatusItem">
-                        <div>
-                            <p>{file.name}</p>
-                        </div>
-                        <div class="progressBar">
-                            <div class="progress" style="width: {progress}%"></div>
-                        </div>
+        {#if value.files.length}
+            <div class="fileItems">
+                {#each value.files as file}
+                    <div class="fileItem">
+                        <p>{file.name}</p>
+                        <button class="fileItemBtn btnRemove" on:click={() => {
+                            value.files = value.files.filter(f => f !== file);
+                        }} />
                     </div>
                 {/each}
             </div>
         {/if}
     </div>
+
+    {#if errors.length}
+        <Error errors={errors} errorText={errorText} styleMin />
+    {/if}
 </div>
 
 <style lang="scss">
@@ -122,6 +124,12 @@ function handleFiles (newFiles: FileList) {
 .component {
     @include flex(column, flex-start, flex-start, 8px);
     position: relative;
+
+    &.error {
+        .filePanel {
+            outline: 1px solid $colorError;
+        }
+    }
 
     h4 {
         font-size: 14px;
@@ -182,6 +190,38 @@ function handleFiles (newFiles: FileList) {
             &:hover {
                 background: $colorTextPrimary;
                 color: $colorWhite;
+            }
+        }
+    }
+
+    .fileItems {
+        @include flex(column, flex-start, stretch, 20px);
+
+        .fileItem {
+            @include flex(row, space-between, center);
+
+            p {
+                font-size: 14px;
+            }
+
+            .fileItemBtn {
+                @include clearDefaultStyle;
+                @include clickable;
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
+                background-color: $colorLighter;
+                background-repeat: no-repeat;
+                background-position: center;
+                transition: 0.25s ease background-color;
+
+                &:hover {
+                    background-color: $colorLightMid;
+                }
+
+                &.btnRemove {
+                    background-image: url('../../assets/icons/iconRemove.svg');
+                }
             }
         }
     }

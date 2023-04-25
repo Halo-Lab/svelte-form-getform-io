@@ -13,7 +13,7 @@ declare global {
 			onclick_outside?: (e: CustomEvent) => void
 		}
 	}
-	
+
 }
 
 export {};
