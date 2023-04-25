@@ -28,9 +28,10 @@ function filterOptions (options: SelectOption[], search: string) {
 }
 
 function highlightStr (str: string, search: string) {
-    const beforeText = str.slice(0, str.toLowerCase().indexOf(search.toLowerCase()));
-    const highlightedText = str.slice(beforeText.length, beforeText.length + search.length);
-    const afterText = str.slice(beforeText.length + search.length);
+    const s = search.toLowerCase().trim();
+    const beforeText = str.slice(0, str.toLowerCase().indexOf(s));
+    const highlightedText = str.slice(beforeText.length, beforeText.length + s.length);
+    const afterText = str.slice(beforeText.length + s.length);
     return { beforeText, highlightedText, afterText };
 }
 
@@ -166,6 +167,7 @@ function highlightStr (str: string, search: string) {
             outline: 1px solid $colorLight;
             position: absolute;
             top: calc(100% + 8px);
+            z-index: 10;
             animation: appear 0.25s ease;
             overflow: auto;
             max-height: 360px;
@@ -178,7 +180,7 @@ function highlightStr (str: string, search: string) {
                 font-size: 16px;
                 text-align: left;
                 border-bottom: 1px solid $colorLight;
-                background: #fff;
+                background: $colorWhite;
                 transition: 0.2s ease;
                 transition-property: background, color;
 
@@ -210,7 +212,7 @@ function highlightStr (str: string, search: string) {
                 position: relative;
                 padding: 0;
                 &:hover, &:focus-visible {
-                    background: #fff;
+                    background: $colorWhite;
                 }
                 &::before {
                     content: '';

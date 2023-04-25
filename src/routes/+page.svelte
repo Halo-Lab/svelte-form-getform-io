@@ -1,5 +1,5 @@
 <script lang="ts">
-import { Form, FormField, FormCheckbox, FormRadioGroup, FormSelect, unchecked } from '$lib';
+import { Form, FormField, FormCheckbox, FormRadioGroup, FormSelect, FormFile, unchecked } from '$lib';
 import { form, field } from 'svelte-forms';
 import { required, email, max } from 'svelte-forms/validators';
 
@@ -9,8 +9,13 @@ const fieldMessage = field('message', '', [required(), max(512)]);
 const fieldTerms = field('terms', false, [unchecked()]);
 const fieldThe = field('the', '', [required()]);
 const fieldCategory = field('category', '', [required()]);
+const fieldImage = field('image', [], [required()]);
 
-const formContact = form(fieldName, fieldEmail, fieldMessage, fieldTerms, fieldThe, fieldCategory);
+const formContact = form(
+    fieldName, fieldEmail, fieldMessage, 
+    fieldTerms, fieldThe, fieldCategory, 
+    fieldImage
+);
 </script>
 
 <style lang="scss">
@@ -98,5 +103,10 @@ const formContact = form(fieldName, fieldEmail, fieldMessage, fieldTerms, fieldT
         errorText={{
             required: "Please select a category"
         }}
+    />
+    <FormFile
+        title="Image"
+        accept="image/*"
+        bind:value={$fieldImage.value}
     />
 </Form>
