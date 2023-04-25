@@ -24,6 +24,20 @@ async function sendForm () {
 
 </script>
 
+<form class="form" on:submit|preventDefault>
+    <div class="formFields">
+        <slot></slot>
+    </div>
+
+    <button on:click={sendForm} disabled={!$form.valid || formSending}>
+        {#if formSending}
+            <div class="loader" />
+        {:else}
+            <span>Send form</span>
+        {/if}
+    </button>
+</form>
+
 <style lang="scss">
 
 @import '../styles/variables.scss';
@@ -117,17 +131,3 @@ button {
 }
 
 </style>
-
-<form class="form">
-    <div class="formFields">
-        <slot></slot>
-    </div>
-
-    <button on:click={sendForm} disabled={!$form.valid || formSending}>
-        {#if formSending}
-            <div class="loader" />
-        {:else}
-            <span>Send form</span>
-        {/if}
-    </button>
-</form>

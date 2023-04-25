@@ -1,15 +1,34 @@
 <script lang="ts">
     
 import type { RadioGroupOption } from "../../util/types";
+import Error from "../components/Error.svelte";
 
 export let title: string;
 export let groupId: string;
 export let options: RadioGroupOption[] = [];
 export let defaultValue: string = "";
+export let errors: string[] = [];
+export let errorText: Record<string, string> = {};
 
 export let value: string = defaultValue;
 
 </script>
+
+<div class="component" class:error={errors.length}>
+    <h4>{title}</h4>
+
+    {#each options as option}
+        <label class="label">
+            <input type="radio" value={option.id} name={groupId} bind:group={value} />
+            <button class="radioVis" on:click={() => value = option.id}></button>
+            <span class="labelText">{option.label}</span>
+        </label>
+    {/each}
+
+    {#if errors.length}
+        <Error errors={errors} errorText={errorText} />
+    {/if}
+</div>
 
 <style lang="scss">
 
@@ -20,6 +39,12 @@ export let value: string = defaultValue;
     
     @include flex(column, flex-start, flex-start, 8px);
     position: relative;
+
+    &.error {
+        .label .radioVis {
+            border: 2px solid $colorError;
+        }
+    }
 
     h4 {
         font-size: 14px;
@@ -73,15 +98,3 @@ export let value: string = defaultValue;
 }
 
 </style>
-
-<div class="component">
-    <h4>{title}</h4>
-
-    {#each options as option}
-        <label class="label">
-            <input type="radio" value={option.id} name={groupId} bind:group={value} />
-            <button class="radioVis" on:click={() => value = option.id}></button>
-            <span class="labelText">{option.label}</span>
-        </label>
-    {/each}
-</div>

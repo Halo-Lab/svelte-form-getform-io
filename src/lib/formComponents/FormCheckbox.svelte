@@ -1,11 +1,26 @@
 <script lang="ts">
 
+import Error from "../components/Error.svelte";
+
 export let title: string;
 export let defaultValue: boolean = false;
+export let errors: string[] = [];
+export let errorText: Record<string, string> = {};
 
 export let value: boolean = defaultValue;
 
 </script>
+
+<div class="component" class:error={errors.length}>
+    <label class="label">
+        <input type="checkbox" bind:checked={value} />
+        <button class="checkboxVis" on:click={() => value = !value}></button>
+        <span class="labelText">{title}</span>
+    </label>
+    {#if errors.length}
+        <Error errors={errors} errorText={errorText} styleMin />
+    {/if}
+</div>
 
 <style lang="scss">
 
@@ -14,6 +29,13 @@ export let value: boolean = defaultValue;
 
 .component {
     @include flex(column);
+    position: relative;
+
+    &.error {
+        .label .checkboxVis {
+            border: 2px solid $colorError;
+        }
+    }
 
     .label {
         @include flex(row, flex-start, center, 12px);
@@ -64,11 +86,3 @@ export let value: boolean = defaultValue;
 }
 
 </style>
-
-<div class="component">
-    <label class="label">
-        <input type="checkbox" bind:checked={value} />
-        <button class="checkboxVis" on:click={() => value = !value}></button>
-        <span class="labelText">{title}</span>
-    </label>
-</div>

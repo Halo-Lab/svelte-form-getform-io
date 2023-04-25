@@ -1,13 +1,15 @@
 <script lang="ts">
-    import { derived } from "svelte/store";
 
-    
 import type { SelectOption } from "../../util/types";
+import { clickOutside } from "../../util/clickOutside";
+import Error from "../components/Error.svelte";
 
 export let title: string;
 export let options: SelectOption[] = [];
 export let defaultValue: string = "";
 export let defaultText: string = "Select an option";
+export let errors: string[] = [];
+export let errorText: Record<string, string> = {};
 
 export let value: string = defaultValue;
 
@@ -25,7 +27,59 @@ function filterOptions (options: SelectOption[], search: string) {
         : options;
 }
 
+function highlightStr (str: string, search: string) {
+    const beforeText = str.slice(0, str.toLowerCase().indexOf(search.toLowerCase()));
+    const highlightedText = str.slice(beforeText.length, beforeText.length + search.length);
+    const afterText = str.slice(beforeText.length + search.length);
+    return { beforeText, highlightedText, afterText };
+}
+
 </script>
+
+<div class="component" class:error={errors.length}>
+    <h4>{title}</h4>
+
+    <div use:clickOutside class="selectContainer" on:click_outside={() => toggleActive(false)}>
+        <button class="selectMain" class:active={active} on:click={() => toggleActive()}>
+            <span>{ options.find(option => option.id === value)?.label ?? defaultText }</span>
+        </button>
+        {#if active}
+            <div class="selectOptions">
+                <div class="selectOption searchInputContainer">
+                    <input 
+                        type="text"
+                        class="searchInput"
+                        placeholder="Type in something"
+                        bind:value={search}
+                    />
+                </div>
+
+                {#each filterOptions(options, search) as option}
+                    <button 
+                        class="selectOption"
+                        class:selected={option.id === value}
+                        on:click={() => {
+                            value = option.id;
+                            toggleActive(false);
+                        }}
+                    >
+                        {
+                            highlightStr(option.label, search).beforeText
+                        }<b>{
+                            highlightStr(option.label, search).highlightedText
+                        }</b>{
+                            highlightStr(option.label, search).afterText
+                        }
+                    </button>
+                {/each}
+            </div>
+        {/if}
+    </div>
+
+    {#if errors.length}
+        <Error errors={errors} errorText={errorText} />
+    {/if}
+</div>
 
 <style lang="scss">
 
@@ -36,6 +90,23 @@ function filterOptions (options: SelectOption[], search: string) {
     
     @include flex(column, flex-start, flex-start, 8px);
     position: relative;
+
+    &.error {
+
+        .selectContainer .selectMain {
+            outline: 1px solid $colorError;
+            &:hover {
+                outline: 1px solid $colorErrorDark;
+            }
+            &.active, &:focus-visible {
+                outline: 1px solid $colorPrimary;
+            }
+            &::after {
+                opacity: 0;
+            }
+        }
+
+    }
 
     h4 {
         font-size: 14px;
@@ -176,38 +247,3 @@ function filterOptions (options: SelectOption[], search: string) {
 }
 
 </style>
-
-<div class="component">
-    <h4>{title}</h4>
-
-    <div class="selectContainer">
-        <button class="selectMain" class:active={active} on:click={() => toggleActive()}>
-            <span>{ options.find(option => option.id === value)?.label ?? defaultText }</span>
-        </button>
-        {#if active}
-            <div class="selectOptions">
-                <div class="selectOption searchInputContainer">
-                    <input 
-                        type="text"
-                        class="searchInput"
-                        placeholder="Type in something"
-                        bind:value={search}
-                    />
-                </div>
-
-                {#each filterOptions(options, search) as option}
-                    <button 
-                        class="selectOption"
-                        class:selected={option.id === value}
-                        on:click={() => {
-                            value = option.id;
-                            toggleActive(false);
-                        }}
-                    >
-                        {option.label}
-                    </button>
-                {/each}
-            </div>
-        {/if}
-    </div>
-</div>

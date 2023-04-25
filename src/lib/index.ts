@@ -6,6 +6,10 @@ import FormRadioGroup from './formComponents/FormRadioGroup.svelte';
 import FormSelect from './formComponents/FormSelect.svelte';
 
 import { FormSubmitData, RadioGroupOption, SelectOption } from '../util/types';
+import { unchecked } from '../util/validators';
 
-export { Form, FormField, FormCheckbox, FormRadioGroup, FormSelect };
+export { 
+    Form, FormField, FormCheckbox, FormRadioGroup, FormSelect, 
+    unchecked,
+};
 export type { FormSubmitData, RadioGroupOption, SelectOption };

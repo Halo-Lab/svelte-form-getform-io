@@ -1,12 +1,12 @@
 <script lang="ts">
-import { Form, FormField, FormCheckbox, FormRadioGroup, FormSelect } from '$lib';
+import { Form, FormField, FormCheckbox, FormRadioGroup, FormSelect, unchecked } from '$lib';
 import { form, field } from 'svelte-forms';
 import { required, email, max } from 'svelte-forms/validators';
 
 const fieldName = field('name', '', [required(), max(32)]);
 const fieldEmail = field('email', '', [required(), email()]);
 const fieldMessage = field('message', '', [required(), max(512)]);
-const fieldTerms = field('terms', false, [required()]);
+const fieldTerms = field('terms', false, [unchecked()]);
 const fieldThe = field('the', '', [required()]);
 const fieldCategory = field('category', '', [required()]);
 
@@ -61,6 +61,10 @@ const formContact = form(fieldName, fieldEmail, fieldMessage, fieldTerms, fieldT
     <FormCheckbox
         title="I agree to the Terms of Service"
         bind:value={$fieldTerms.value}
+        errors={$fieldTerms.errors}
+        errorText={{
+            unchecked: "Please agree to the Terms of Service"
+        }}
     />
     <FormRadioGroup
         title="Select the"
@@ -71,6 +75,10 @@ const formContact = form(fieldName, fieldEmail, fieldMessage, fieldTerms, fieldT
             { id: 'third', label: 'Third' }
         ]}
         bind:value={$fieldThe.value}
+        errors={$fieldThe.errors}
+        errorText={{
+            required: "Please select the"
+        }}
     />
     <FormSelect
         title="Category"
@@ -84,13 +92,11 @@ const formContact = form(fieldName, fieldEmail, fieldMessage, fieldTerms, fieldT
             { id: 'suggestions2', label: 'Suggestions' },
             { id: 'bugs2', label: 'Bugs' },
             { id: 'other2', label: 'Other' },
-            { id: 'suggestions3', label: 'Suggestions' },
-            { id: 'bugs3', label: 'Bugs' },
-            { id: 'other3', label: 'Other' },
-            { id: 'suggestions4', label: 'Suggestions' },
-            { id: 'bugs4', label: 'Bugs' },
-            { id: 'other4', label: 'Other' },
         ]}
         bind:value={$fieldCategory.value}
+        errors={$fieldCategory.errors}
+        errorText={{
+            required: "Please select a category"
+        }}
     />
 </Form>
