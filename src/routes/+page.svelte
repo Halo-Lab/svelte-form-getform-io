@@ -77,7 +77,19 @@ const formContact = form(fieldName, fieldEmail, fieldMessage, fieldTerms, fieldT
         options={[
             { id: 'suggestions', label: 'Suggestions' },
             { id: 'bugs', label: 'Bugs' },
-            { id: 'other', label: 'Other' }
+            { id: 'other', label: 'Other' },
+            { id: 'suggestions1', label: 'Suggestions' },
+            { id: 'bugs1', label: 'Bugs' },
+            { id: 'other1', label: 'Other' },
+            { id: 'suggestions2', label: 'Suggestions' },
+            { id: 'bugs2', label: 'Bugs' },
+            { id: 'other2', label: 'Other' },
+            { id: 'suggestions3', label: 'Suggestions' },
+            { id: 'bugs3', label: 'Bugs' },
+            { id: 'other3', label: 'Other' },
+            { id: 'suggestions4', label: 'Suggestions' },
+            { id: 'bugs4', label: 'Bugs' },
+            { id: 'other4', label: 'Other' },
         ]}
         bind:value={$fieldCategory.value}
     />
