@@ -1,20 +1,21 @@
 <script lang="ts">
-import { Form, FormField, FormCheckbox, FormRadioGroup, FormSelect, FormFile, checked, MultiFileArray, filesRequired } from '$lib';
+import { Form, FormText, FormCheckbox, FormRadioGroup, FormSelect, FormFile } from '$lib';
+import { filesRequired, checked } from '$lib/validators';
+import type { FileField, TextField, CheckboxField, RadioGroupField, SelectField } from '$lib';
 import { form, field } from 'svelte-forms';
 import { required, email, max } from 'svelte-forms/validators';
 
-const fieldName = field('name', '', [required(), max(32)]);
-const fieldEmail = field('email', '', [required(), email()]);
-const fieldMessage = field('message', '', [required(), max(512)]);
-const fieldTerms = field('terms', false, [checked()]);
-const fieldThe = field('the', '', [required()]);
-const fieldCategory = field('category', '', [required()]);
-const fieldImages = field('images', new MultiFileArray());
-const fieldOneImage = field('oneImage', new MultiFileArray(), [filesRequired()]);
+const fieldName = field<TextField>('name', '', [required(), max(32)]);
+const fieldEmail = field<TextField>('email', '', [required(), email()]);
+const fieldMessage = field<TextField>('message', '', [required(), max(512)]);
+const fieldTerms = field<CheckboxField>('terms', false, [checked()]);
+const fieldCategory = field<SelectField>('category', '', [required()]);
+const fieldImages = field<FileField>('images', undefined, [filesRequired()]);
+const fieldOneImage = field<FileField>('oneImage', undefined, [filesRequired()]);
 
 const formContact = form(
     fieldName, fieldEmail, fieldMessage, 
-    fieldTerms, fieldThe, fieldCategory, 
+    fieldTerms, fieldCategory, 
     fieldOneImage, fieldImages
 );
 </script>
@@ -34,31 +35,28 @@ const formContact = form(
     onFormSubmit={data => console.log(data)}
     form={formContact}
 >
-    <FormField 
+    <FormText 
         title="Your Name" 
         type="text" 
-        bind:value={$fieldName.value} 
-        errors={$fieldName.errors} 
+        bind:field={$fieldName}
         errorText={{
             required: "Please enter your name",
             max: "The name is too long"
         }} 
     />
-    <FormField 
+    <FormText 
         title="Email Address" 
         type="email" 
-        bind:value={$fieldEmail.value} 
-        errors={$fieldEmail.errors}
+        bind:field={$fieldEmail}
         errorText={{
             required: "Please enter your email address",
             default: "Please enter a valid email address"
         }}
     />
-    <FormField 
+    <FormText 
         title="Message" 
         type="message" 
-        bind:value={$fieldMessage.value} 
-        errors={$fieldMessage.errors}
+        bind:field={$fieldMessage}
         errorText={{
             required: "Please enter a message",
             max: "The message is too long"
@@ -66,24 +64,9 @@ const formContact = form(
     />
     <FormCheckbox
         title="I agree to the Terms of Service"
-        bind:value={$fieldTerms.value}
-        errors={$fieldTerms.errors}
+        bind:field={$fieldTerms}
         errorText={{
             checked: "Please agree to the Terms of Service"
-        }}
-    />
-    <FormRadioGroup
-        title="Select the"
-        groupId="the"
-        options={[
-            { id: 'first', label: 'First' },
-            { id: 'second', label: 'Second' },
-            { id: 'third', label: 'Third' }
-        ]}
-        bind:value={$fieldThe.value}
-        errors={$fieldThe.errors}
-        errorText={{
-            required: "Please select the"
         }}
     />
     <FormSelect
@@ -99,8 +82,7 @@ const formContact = form(
             { id: 'bugs2', label: 'Bugs' },
             { id: 'other2', label: 'Other' },
         ]}
-        bind:value={$fieldCategory.value}
-        errors={$fieldCategory.errors}
+        bind:field={$fieldCategory}
         errorText={{
             required: "Please select a category"
         }}
@@ -108,21 +90,11 @@ const formContact = form(
     <FormFile
         title="Images"
         accept="image/*"
-        description="Supported formates: JPEG, PNG, GIF, PDF, Word"
-        bind:value={$fieldImages.value}
-        errors={$fieldImages.errors}
+        multiple
+        description="Supported formates: JPEG, PNG, GIF, WEBP"
+        bind:field={$fieldImages}
         errorText={{
             filesRequired: "Please upload at least one image"
-        }}
-    />
-    <FormFile
-        title="Audio File"
-        accept="audio/*"
-        multiple={false}
-        bind:value={$fieldOneImage.value}
-        errors={$fieldOneImage.errors}
-        errorText={{
-            filesRequired: "Please upload an audio"
         }}
     />
 </Form>

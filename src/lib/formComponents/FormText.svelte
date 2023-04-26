@@ -1,30 +1,35 @@
 <script lang="ts">
 
 import Error from "$lib/components/Error.svelte";
+import { getContext } from "svelte";
+import type { Writable } from "svelte/store";
+import type { Field } from "svelte-forms/types";
+import type { TextField } from "../../util/types";
 
 export let title: string;
 export let type: 'text' | 'email' | 'message' = 'text';
-export let defaultValue: string = '';
-export let errors: string[] = [];
 export let errorText: Record<string, string> = {};
 
-export let value: string = defaultValue;
+export let field: Field<TextField>;
+
+const formInteracted = getContext<Writable<boolean>>('formInteracted');
+$: shouldShowError = field.errors.length && $formInteracted;
 
 </script>
 
-<div class="formField" class:error={errors.length}>
+<div class="formField" class:error={shouldShowError}>
     <h4>{title}</h4>
 
     {#if type === 'message'}
-        <textarea placeholder={title} bind:value={value}></textarea>
+        <textarea placeholder={title} bind:value={field.value}></textarea>
     {:else if type === 'email'}
-        <input type="email" placeholder={title} bind:value={value} />
+        <input type="email" placeholder={title} bind:value={field.value} />
     {:else}
-        <input type="text" placeholder={title} bind:value={value} />
+        <input type="text" placeholder={title} bind:value={field.value} />
     {/if}
 
-    {#if errors.length}
-        <Error errors={errors} errorText={errorText} />
+    {#if shouldShowError}
+        <Error errors={field.errors} errorText={errorText} />
     {/if}
 </div>
 

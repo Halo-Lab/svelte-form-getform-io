@@ -1,24 +1,29 @@
 <script lang="ts">
 
 import Error from "../components/Error.svelte";
+import { getContext } from "svelte";
+import type { Writable } from "svelte/store";
+import type { Field } from "svelte-forms/types";
+import type { CheckboxField } from "../../util/types";
 
 export let title: string;
-export let defaultValue: boolean = false;
-export let errors: string[] = [];
 export let errorText: Record<string, string> = {};
 
-export let value: boolean = defaultValue;
+export let field: Field<CheckboxField>;
+
+const formInteracted = getContext<Writable<boolean>>('formInteracted');
+$: shouldShowError = field.errors.length && $formInteracted;
 
 </script>
 
-<div class="component" class:error={errors.length}>
+<div class="component" class:error={shouldShowError}>
     <label class="label">
-        <input type="checkbox" bind:checked={value} />
-        <button class="checkboxVis" on:click={() => value = !value}></button>
+        <input type="checkbox" bind:checked={field.value} />
+        <button class="checkboxVis" on:click={() => field.value = !field.value}></button>
         <span class="labelText">{title}</span>
     </label>
-    {#if errors.length}
-        <Error errors={errors} errorText={errorText} styleMin />
+    {#if shouldShowError}
+        <Error errors={field.errors} errorText={errorText} styleMin />
     {/if}
 </div>
 

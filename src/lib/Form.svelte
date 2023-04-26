@@ -1,7 +1,10 @@
 <script lang="ts">
 
+import { setContext } from 'svelte';
+import { writable } from 'svelte/store';
 import { form as formFunc } from 'svelte-forms';
 import { sendToGetForm } from '../util/network';
+import type { Writable } from 'svelte/store';
 import type { FormSubmitData } from '../util/types';
 
 export let getformId: string;
@@ -9,9 +12,12 @@ export let form: ReturnType<typeof formFunc>;
 export let onFormSubmit: (data: FormSubmitData) => void = () => {};
 
 let formSending = false;
+let formInteracted = writable(false);
+setContext<Writable<boolean>>('formInteracted', formInteracted);
 
 async function sendForm () {
     await form.validate();
+    $formInteracted = true;
     if ($form.valid) {
         formSending = true;
         try {
@@ -29,7 +35,7 @@ async function sendForm () {
         <slot></slot>
     </div>
 
-    <button on:click={sendForm} disabled={!$form.valid || formSending}>
+    <button on:click={sendForm} disabled={($formInteracted && !$form.valid) || formSending}>
         {#if formSending}
             <div class="loader" />
         {:else}

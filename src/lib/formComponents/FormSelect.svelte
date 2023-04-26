@@ -1,17 +1,21 @@
 <script lang="ts">
 
-import type { SelectOption } from "../../util/types";
 import { clickOutside } from "../../util/clickOutside";
 import Error from "../components/Error.svelte";
+import { getContext } from "svelte";
+import type { Writable } from "svelte/store";
+import type { Field } from "svelte-forms/types";
+import type { SelectField, SelectOption } from "../../util/types";
 
 export let title: string;
 export let options: SelectOption[] = [];
-export let defaultValue: string = "";
 export let defaultText: string = "Select an option";
-export let errors: string[] = [];
 export let errorText: Record<string, string> = {};
 
-export let value: string = defaultValue;
+export let field: Field<SelectField>;
+
+const formInteracted = getContext<Writable<boolean>>('formInteracted');
+$: shouldShowError = field.errors.length && $formInteracted;
 
 let active: boolean = false;
 let search: string = "";
@@ -37,12 +41,12 @@ function highlightStr (str: string, search: string) {
 
 </script>
 
-<div class="component" class:error={errors.length}>
+<div class="component" class:error={shouldShowError}>
     <h4>{title}</h4>
 
     <div use:clickOutside class="selectContainer" on:click_outside={() => toggleActive(false)}>
         <button class="selectMain" class:active={active} on:click={() => toggleActive()}>
-            <span>{ options.find(option => option.id === value)?.label ?? defaultText }</span>
+            <span>{ options.find(option => option.id === field.value)?.label ?? defaultText }</span>
         </button>
         {#if active}
             <div class="selectOptions">
@@ -58,9 +62,9 @@ function highlightStr (str: string, search: string) {
                 {#each filterOptions(options, search) as option}
                     <button 
                         class="selectOption"
-                        class:selected={option.id === value}
+                        class:selected={option.id === field.value}
                         on:click={() => {
-                            value = option.id;
+                            field.value = option.id;
                             toggleActive(false);
                         }}
                     >
@@ -77,8 +81,8 @@ function highlightStr (str: string, search: string) {
         {/if}
     </div>
 
-    {#if errors.length}
-        <Error errors={errors} errorText={errorText} />
+    {#if shouldShowError}
+        <Error errors={field.errors} errorText={errorText} />
     {/if}
 </div>
 

@@ -5,15 +5,21 @@ import mimeMatch from "mime-match";
 import Error from "$lib/components/Error.svelte";
 import { MultiFileArray } from "../../util/classes";
 import uploadIcon from "$lib/../assets/icons/upload.svg";
+import { getContext } from "svelte";
+import type { Writable } from "svelte/store";
+import type { Field } from "svelte-forms/types";
+import type { FileField } from "../../util/types";
 
 export let title: string;
 export let description: string = "";
-export let multiple: boolean = true;
+export let multiple: boolean = false;
 export let accept: string = "*";
-export let errors: string[] = [];
 export let errorText: Record<string, string> = {};
 
-export let value: MultiFileArray = new MultiFileArray();
+export let field: Field<FileField>;
+
+const formInteracted = getContext<Writable<boolean>>('formInteracted');
+$: shouldShowError = field.errors.length && $formInteracted;
 
 let elemFileInput: HTMLInputElement;
 let isDragging = false;
@@ -51,12 +57,12 @@ function handleFiles (newFiles: FileList) {
 
     fileArray.forEach(file => {
         if (!mimeMatch(file.type, accept)) return;
-        const formData = new FormData();
-        formData.append('file', file);
+        if (!field.value) field.value = new MultiFileArray();
         if (multiple)
-            value.files = [...value.files, file];
+            field.value.addFile(file);
         else
-            value.files = [file];
+            field.value.setFiles([file]);
+        field = field; // Force update
     });
 
     elemFileInput.value = "";
@@ -64,7 +70,7 @@ function handleFiles (newFiles: FileList) {
 
 </script>
 
-<div class="component" class:error={errors.length}>
+<div class="component" class:error={shouldShowError}>
     <h4>{title}</h4>
 
     <div class="filePanel">
@@ -97,13 +103,15 @@ function handleFiles (newFiles: FileList) {
                 Choose Files
             </button>
         </div>
-        {#if value.files.length}
+        {#if field.value?.getFileCount()}
             <div class="fileItems">
-                {#each value.files as file}
+                {#each field.value.files as file}
                     <div class="fileItem">
                         <p>{file.name}</p>
                         <button class="fileItemBtn btnRemove" on:click={() => {
-                            value.files = value.files.filter(f => f !== file);
+                            if (!field.value) return;
+                            field.value.removeFile(file);
+                            field = field; // Force update
                         }} />
                     </div>
                 {/each}
@@ -111,8 +119,8 @@ function handleFiles (newFiles: FileList) {
         {/if}
     </div>
 
-    {#if errors.length}
-        <Error errors={errors} errorText={errorText} styleMin />
+    {#if shouldShowError}
+        <Error errors={field.errors} errorText={errorText} styleMin />
     {/if}
 </div>
 

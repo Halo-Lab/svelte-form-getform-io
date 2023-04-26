@@ -1,32 +1,36 @@
 <script lang="ts">
-    
-import type { RadioGroupOption } from "../../util/types";
+
 import Error from "../components/Error.svelte";
+import { getContext } from "svelte";
+import type { Writable } from "svelte/store";
+import type { Field } from "svelte-forms/types";
+import type { RadioGroupOption, RadioGroupField } from "../../util/types";
 
 export let title: string;
 export let groupId: string;
 export let options: RadioGroupOption[] = [];
-export let defaultValue: string = "";
-export let errors: string[] = [];
 export let errorText: Record<string, string> = {};
 
-export let value: string = defaultValue;
+export let field: Field<RadioGroupField>;
+
+const formInteracted = getContext<Writable<boolean>>('formInteracted');
+$: shouldShowError = field.errors.length && $formInteracted;
 
 </script>
 
-<div class="component" class:error={errors.length}>
+<div class="component" class:error={shouldShowError}>
     <h4>{title}</h4>
 
     {#each options as option}
         <label class="label">
-            <input type="radio" value={option.id} name={groupId} bind:group={value} />
-            <button class="radioVis" on:click={() => value = option.id}></button>
+            <input type="radio" value={option.id} name={groupId} bind:group={field.value} />
+            <button class="radioVis" on:click={() => field.value = option.id}></button>
             <span class="labelText">{option.label}</span>
         </label>
     {/each}
 
-    {#if errors.length}
-        <Error errors={errors} errorText={errorText} />
+    {#if shouldShowError}
+        <Error errors={field.errors} errorText={errorText} />
     {/if}
 </div>
 
