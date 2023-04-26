@@ -30,7 +30,7 @@ $: shouldShowError = field.errors.length && $formInteracted;
     {/each}
 
     {#if shouldShowError}
-        <Error errors={field.errors} errorText={errorText} />
+        <Error errors={field.errors} errorText={errorText} iconTop={-4} />
     {/if}
 </div>
 
@@ -48,6 +48,7 @@ $: shouldShowError = field.errors.length && $formInteracted;
         .label .radioVis {
             border: 2px solid $colorError;
         }
+        padding-right: 48px;
     }
 
     h4 {

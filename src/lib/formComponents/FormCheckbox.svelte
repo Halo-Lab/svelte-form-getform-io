@@ -23,7 +23,7 @@ $: shouldShowError = field.errors.length && $formInteracted;
         <span class="labelText">{title}</span>
     </label>
     {#if shouldShowError}
-        <Error errors={field.errors} errorText={errorText} styleMin />
+        <Error errors={field.errors} errorText={errorText} iconTop={1} />
     {/if}
 </div>
 
@@ -40,6 +40,8 @@ $: shouldShowError = field.errors.length && $formInteracted;
         .label .checkboxVis {
             border: 2px solid $colorError;
         }
+
+        padding-right: 48px;
     }
 
     .label {
@@ -56,6 +58,7 @@ $: shouldShowError = field.errors.length && $formInteracted;
             @include flex(column, center, center);
             width: 24px;
             height: 24px;
+            flex-shrink: 0;
             border-radius: 4px;
             border: 2px solid $colorLightMid;
             background: $colorWhite;

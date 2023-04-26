@@ -135,6 +135,11 @@ function highlightStr (str: string, search: string) {
             color: $colorTextPrimary;
             width: 100%;
             outline: 1px solid $colorLight;
+            padding-right: 48px;
+
+            &:hover {
+                outline: 1px solid $colorTextPlaceholder;
+            }
 
             &::placeholder {
                 color: $colorTextPlaceholder;

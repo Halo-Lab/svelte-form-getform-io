@@ -69,13 +69,14 @@ $: shouldShowError = field.errors.length && $formInteracted;
         border-radius: 14px;
         color: $colorTextPrimary;
         width: 100%;
+        outline: 1px solid $colorLight;
 
         &::placeholder {
             color: $colorTextPlaceholder;
         }
 
         &:hover {
-            outline: 1px solid $colorLight;
+            outline: 1px solid $colorTextPlaceholder;
         }
         &:focus {
             outline: 1px solid $colorTextPrimary;

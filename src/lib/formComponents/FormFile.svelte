@@ -120,7 +120,7 @@ function handleFiles (newFiles: FileList) {
     </div>
 
     {#if shouldShowError}
-        <Error errors={field.errors} errorText={errorText} styleMin />
+        <Error errors={field.errors} errorText={errorText} iconTop={-4} />
     {/if}
 </div>
 
@@ -137,10 +137,14 @@ function handleFiles (newFiles: FileList) {
         .filePanel {
             outline: 1px solid $colorError;
         }
+        h4 {
+            padding-right: 48px;
+        }
     }
 
     h4 {
         font-size: 14px;
+        width: 100%;
         font-weight: 500;
         color: $colorTextPrimary;
     }
@@ -152,6 +156,7 @@ function handleFiles (newFiles: FileList) {
         border-radius: 14px;
         background: $colorWhite;
         width: 100%;
+        outline: 1px solid $colorLight;
     }
 
     .fileDropzone {
@@ -162,7 +167,7 @@ function handleFiles (newFiles: FileList) {
         background-size: 100% 100%;
         user-select: none;
 
-        &.dragging {
+        &.dragging, &:has(button:focus-visible) {
             background-image: url('../../assets/icons/dropzoneBgActive.png');
             & * {    
                 pointer-events: none;
@@ -223,7 +228,7 @@ function handleFiles (newFiles: FileList) {
                 background-position: center;
                 transition: 0.25s ease background-color;
 
-                &:hover {
+                &:hover, &:focus-visible {
                     background-color: $colorLightMid;
                 }
 
