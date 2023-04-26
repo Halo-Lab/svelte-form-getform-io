@@ -29,9 +29,9 @@ const formContact = form(
     background: $colorLighter;
 }
 
-:global(.formContact) {
-    background: #fff;
-}
+// :global(.formContact) {
+//     background: #fff;
+// }
 
 </style>
 

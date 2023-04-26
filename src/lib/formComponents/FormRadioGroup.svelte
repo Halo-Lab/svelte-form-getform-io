@@ -77,10 +77,11 @@ $: shouldShowError = field.errors.length && $formInteracted;
             background: $colorWhite;
             transition: 0.2s ease;
             transition-property: border, background;
+            flex-shrink: 0;
         }
 
         .labelText {
-            padding-top: 4px;
+            padding-top: 2px;
             font-size: 16px;
             color: $colorTextPrimary;
         }
