@@ -29,12 +29,17 @@ const formContact = form(
     background: $colorLighter;
 }
 
+:global(.formContact) {
+    background: #fff;
+}
+
 </style>
 
 <Form 
     getformId={import.meta.env.VITE_GETFORM_ID} 
     onFormSubmit={data => console.log(data)}
     form={formContact}
+    globalClass="formContact"
 >
     <FormText 
         title="Your Name" 

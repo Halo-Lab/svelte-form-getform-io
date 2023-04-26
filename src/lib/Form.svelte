@@ -10,6 +10,7 @@ import type { FormSubmitData } from '../util/types';
 export let getformId: string;
 export let form: ReturnType<typeof formFunc>;
 export let onFormSubmit: (data: FormSubmitData) => void = () => {};
+export let globalClass: string = '';
 
 let formSending = false;
 let formInteracted = writable(false);
@@ -30,7 +31,7 @@ async function sendForm () {
 
 </script>
 
-<form class="form" on:submit|preventDefault>
+<form class={"form " + globalClass} on:submit|preventDefault>
     <div class="formFields">
         <slot></slot>
     </div>

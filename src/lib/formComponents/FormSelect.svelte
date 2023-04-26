@@ -13,6 +13,7 @@ export let defaultText: string = "Select an option";
 export let errorText: Record<string, string> = {};
 
 export let field: Field<SelectField>;
+export let globalClass: string = '';
 
 const formInteracted = getContext<Writable<boolean>>('formInteracted');
 $: shouldShowError = field.errors.length && $formInteracted;
@@ -41,7 +42,7 @@ function highlightStr (str: string, search: string) {
 
 </script>
 
-<div class="component" class:error={shouldShowError}>
+<div class={"component" + globalClass} class:error={shouldShowError}>
     <h4>{title}</h4>
 
     <div use:clickOutside class="selectContainer" on:click_outside={() => toggleActive(false)}>

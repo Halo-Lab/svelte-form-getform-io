@@ -10,13 +10,14 @@ export let title: string;
 export let errorText: Record<string, string> = {};
 
 export let field: Field<CheckboxField>;
+export let globalClass: string = '';
 
 const formInteracted = getContext<Writable<boolean>>('formInteracted');
 $: shouldShowError = field.errors.length && $formInteracted;
 
 </script>
 
-<div class="component" class:error={shouldShowError}>
+<div class={"component" + globalClass} class:error={shouldShowError}>
     <label class="label">
         <input type="checkbox" bind:checked={field.value} />
         <button class="checkboxVis" on:click={() => field.value = !field.value}></button>

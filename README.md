@@ -151,6 +151,7 @@ By default, when a UI component fails validation, it will display a generic erro
   | --- | --- | --- |
   | `getformId` | `string` | Getform API key |
   | `onFormSubmit` | `(data: FormSubmitData) => void = ()` | Callback function to handle form submit |
+  | `globalClass` | `string = ''` | A custom class for the component. When styling, make sure to use the `:global` selector, as this is currently a limitation of how Svete scopes styles |
 
 - `FormText`
 
@@ -162,6 +163,7 @@ By default, when a UI component fails validation, it will display a generic erro
   | `type` | `'text' | 'email' | 'message' = 'text'` | Input type. Defaults to `text` |
   | `field` | `Field<TextField>` | svelte-forms field to bind the input to |
   | `errorText` | `{ [key: string]: string } = {}` | Custom error messages for validators |
+  | `globalClass` | `string = ''` | A custom class for the component. When styling, make sure to use the `:global` selector, as this is currently a limitation of how Svete scopes styles |
 
 - `FormCheckbox`
 
@@ -172,6 +174,7 @@ By default, when a UI component fails validation, it will display a generic erro
   | `title` | `string` | Checkbox label |
   | `field` | `Field<CheckboxField>` | svelte-forms field to bind the checkbox to |
   | `errorText` | `{ [key: string]: string } = {}` | Custom error messages for validators |
+  | `globalClass` | `string = ''` | A custom class for the component. When styling, make sure to use the `:global` selector, as this is currently a limitation of how Svete scopes styles |
 
 - `FormRadioGroup`
 
@@ -184,6 +187,7 @@ By default, when a UI component fails validation, it will display a generic erro
   | `options` | `RadioGroupOption[] = []` | Radio group options. An option is an object that contains `id` and `label` fields. Option ids must be unique relative to the component |
   | `field` | `Field<RadioGroupField>` | svelte-forms field to bind the radio group to |
   | `errorText` | `{ [key: string]: string } = {}` | Custom error messages for validators |
+  | `globalClass` | `string = ''` | A custom class for the component. When styling, make sure to use the `:global` selector, as this is currently a limitation of how Svete scopes styles |
 
 - `FormSelect`
 
@@ -196,6 +200,7 @@ By default, when a UI component fails validation, it will display a generic erro
   | `defaultText` | `string = 'Select an option'` | Text to display when no option is selected |
   | `field` | `Field<SelectField>` | svelte-forms field to bind the select to |
   | `errorText` | `{ [key: string]: string } = {}` | Custom error messages for validators |
+  | `globalClass` | `string = ''` | A custom class for the component. When styling, make sure to use the `:global` selector, as this is currently a limitation of how Svete scopes styles |
 
 - `FormFile`
 
@@ -209,6 +214,7 @@ By default, when a UI component fails validation, it will display a generic erro
   | `multiple` | `boolean = false` | Whether to accept multiple files |
   | `field` | `Field<FileField>` | svelte-forms field to bind the file input to |
   | `errorText` | `{ [key: string]: string } = {}` | Custom error messages for validators |
+  | `globalClass` | `string = ''` | A custom class for the component. When styling, make sure to use the `:global` selector, as this is currently a limitation of how Svete scopes styles |
 
 
 ### Field types

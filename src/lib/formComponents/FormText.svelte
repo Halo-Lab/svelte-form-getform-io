@@ -11,13 +11,14 @@ export let type: 'text' | 'email' | 'message' = 'text';
 export let errorText: Record<string, string> = {};
 
 export let field: Field<TextField>;
+export let globalClass: string = '';
 
 const formInteracted = getContext<Writable<boolean>>('formInteracted');
 $: shouldShowError = field.errors.length && $formInteracted;
 
 </script>
 
-<div class="formField" class:error={shouldShowError}>
+<div class={"formField" + globalClass} class:error={shouldShowError}>
     <h4>{title}</h4>
 
     {#if type === 'message'}

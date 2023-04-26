@@ -12,13 +12,14 @@ export let options: RadioGroupOption[] = [];
 export let errorText: Record<string, string> = {};
 
 export let field: Field<RadioGroupField>;
+export let globalClass: string = '';
 
 const formInteracted = getContext<Writable<boolean>>('formInteracted');
 $: shouldShowError = field.errors.length && $formInteracted;
 
 </script>
 
-<div class="component" class:error={shouldShowError}>
+<div class={"component" + globalClass} class:error={shouldShowError}>
     <h4>{title}</h4>
 
     {#each options as option}
