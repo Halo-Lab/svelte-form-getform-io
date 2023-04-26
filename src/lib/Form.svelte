@@ -1,40 +1,49 @@
 <script lang="ts">
 
-import { form, field } from 'svelte-forms';
-import { required, email, max } from 'svelte-forms/validators';
+import { setContext } from 'svelte';
+import { writable } from 'svelte/store';
+import { form as formFunc } from 'svelte-forms';
 import { sendToGetForm } from '../util/network';
-import { FormSubmitData } from '../util/types';
-
-import FormField from './FormField.svelte';
+import type { Writable } from 'svelte/store';
+import type { FormSubmitData } from '../util/types';
 
 export let getformId: string;
+export let form: ReturnType<typeof formFunc>;
 export let onFormSubmit: (data: FormSubmitData) => void = () => {};
+export let globalClass: string = '';
 
 let formSending = false;
-
-const fieldName = field('name', '', [required(), max(32)]);
-const fieldEmail = field('email', '', [required(), email()]);
-const fieldMessage = field('message', '', [required(), max(512)]);
-
-const formContact = form(fieldName, fieldEmail, fieldMessage);
+let formInteracted = writable(false);
+setContext<Writable<boolean>>('formInteracted', formInteracted);
 
 async function sendForm () {
-    await formContact.validate();
-    if ($formContact.valid) {
+    await form.validate();
+    $formInteracted = true;
+    if ($form.valid) {
         formSending = true;
         try {
-            await sendToGetForm($formContact.summary, getformId);
-            onFormSubmit({
-                name: $fieldName.value,
-                email: $fieldEmail.value,
-                message: $fieldMessage.value,
-            });
+            await sendToGetForm($form.summary, getformId);
+            onFormSubmit($form.summary);
         } catch {}
         formSending = false;
     }
 }
 
 </script>
+
+<form class={"form " + globalClass} on:submit|preventDefault>
+    <div class="formFields">
+        <slot></slot>
+    </div>
+
+    <button on:click={sendForm} disabled={($formInteracted && !$form.valid) || formSending}>
+        {#if formSending}
+            <div class="loader" />
+        {:else}
+            <span>Send form</span>
+        {/if}
+    </button>
+</form>
 
 <style lang="scss">
 
@@ -129,46 +138,3 @@ button {
 }
 
 </style>
-
-<form class="form">
-    <div class="formFields">
-        <FormField 
-            title="Your Name" 
-            type="text" 
-            bind:value={$fieldName.value} 
-            errors={$fieldName.errors} 
-            errorText={{
-                required: "Please enter your name",
-                max: "The name is too long"
-            }} 
-        />
-        <FormField 
-            title="Email Address" 
-            type="email" 
-            bind:value={$fieldEmail.value} 
-            errors={$fieldEmail.errors}
-            errorText={{
-                required: "Please enter your email address",
-                default: "Please enter a valid email address"
-            }}
-        />
-        <FormField 
-            title="Message" 
-            type="message" 
-            bind:value={$fieldMessage.value} 
-            errors={$fieldMessage.errors}
-            errorText={{
-                required: "Please enter a message",
-                max: "The message is too long"
-            }}
-        />
-    </div>
-
-    <button on:click={sendForm} disabled={!$formContact.valid || formSending}>
-        {#if formSending}
-            <div class="loader" />
-        {:else}
-            <span>Send form</span>
-        {/if}
-    </button>
-</form>
